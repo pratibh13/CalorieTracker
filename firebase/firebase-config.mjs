@@ -10,14 +10,14 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDfNBd8PAAmNsMWsuwDPiQjwQFa_Qc9Wtw",
-  authDomain: "rithackathon.firebaseapp.com",
-  databaseURL: "https://rithackathon-default-rtdb.firebaseio.com",
-  projectId: "rithackathon",
-  storageBucket: "rithackathon.appspot.com",
-  messagingSenderId: "534455012889",
-  appId: "1:534455012889:web:4c6bb25624b7c00299e488",
-  measurementId: "G-MGY55WESG5"
+  apiKey: "*******",
+  authDomain: "*****",
+  databaseURL: "******",
+  projectId: "****",
+  storageBucket: "*****",
+  messagingSenderId: "******",
+  appId: "****",
+  measurementId: "*******"
   };
 
 // TODO init firebase app once only
