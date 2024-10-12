@@ -37,6 +37,12 @@ const HomeScreen = ({ navigation }) => {
 	const [food, setFood] = useState(370);
 	const [exercise, setExercise] = useState(0);
 
+	// Macronutrient state variables
+	const [protein, setProtein] = useState(50);
+	const [carbs, setCarbs] = useState(200);
+	const [fats, setFats] = useState(70);
+	const [fiber, setFiber] = useState(30);
+
 	const focusDate = id => {
 		const temp = [];
 		dates.forEach(d => {
@@ -51,7 +57,9 @@ const HomeScreen = ({ navigation }) => {
 
 	const [history, setHistory] = useState({
 		breakfast: [],
+		breakfastSnack:[],
 		lunch: [],
+		eveningSnack:[],
 		dinner: [],
 	});
 
@@ -108,15 +116,25 @@ const HomeScreen = ({ navigation }) => {
 				const history = await DailyConsumptionController.getDailyConsumption(
 					todayAsStr
 				);
+				// console.log(history);
 				setHistory(history);
 				let foodConsumed = calculateTotalCaloriesConsumed(
 					history.breakfast,
+					history.breakfastSnack,
 					history.lunch,
+					history.eveningSnack,
 					history.dinner
 				);
 				setBaseGoal(calculateCaloriesNeeded(isMale, weight, height, age));
 				setFood(foodConsumed);
 				setExercise(activityLevel);
+
+				// Update macronutrients
+				setProtein(history.protein || 0);
+				setCarbs(history.carbs || 0);
+				setFats(history.fats || 0);
+				setFiber(history.fiber || 0);
+
 				setIsHistoryLoading(false);
 			} catch (error) {
 				console.log(error);
@@ -129,6 +147,8 @@ const HomeScreen = ({ navigation }) => {
 
 	// for scroll view
 	const scrollViewRef = useRef();
+
+	
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
@@ -215,7 +235,7 @@ const HomeScreen = ({ navigation }) => {
 										fontSize: SIZES.large,
 									}}
 								>
-									Calories
+									Daily Calories
 								</Text>
 								<Text
 									style={{
@@ -223,7 +243,7 @@ const HomeScreen = ({ navigation }) => {
 										fontSize: SIZES.font,
 									}}
 								>
-									Remaining = Goal - Food + Exercise
+									Calories = Protien + Carbs + Fats 
 								</Text>
 							</Layout>
 							<Layout
@@ -237,7 +257,7 @@ const HomeScreen = ({ navigation }) => {
 									style={{
 										justifyContent: "center",
 										alignItems: "center",
-										width: "60%",
+										width: "55%",
 									}}
 								>
 									<VictoryPie
@@ -280,28 +300,36 @@ const HomeScreen = ({ navigation }) => {
 										)}
 									/>
 								</Layout>
+
+
+
 								<Layout
 									style={{
-										width: "40%",
+										width: "45%",
 									}}
 								>
 									<HomePageIcon
 										source={assets.flagIcon}
-										title="Base Goal"
-										data={baseGoal}
+										title="Protien"
+										data={protein}
+										total={Math.round((baseGoal * 0.35) / 4)}
 									/>
 									<HomePageIcon
 										source={assets.eatIcon}
-										title="Food"
-										data={food}
+										title="Carbs"
+										data={carbs}
+										total={Math.round((baseGoal * 0.2) / 4)}
 									/>
 									<HomePageIcon
 										source={assets.fireIcon}
-										title="Exercise"
-										data={exercise}
+										title="Fats"
+										data={fats}
+										total={Math.round((baseGoal * 0.45) / 9)}
 									/>
 								</Layout>
 							</Layout>
+							
+					
 						</Layout>
 					</Layout>
 					<Layout style={styles.button}>

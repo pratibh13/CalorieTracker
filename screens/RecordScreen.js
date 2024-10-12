@@ -70,7 +70,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		unit: "",
 	});
 
-	const meal = ["Breakfast", "Lunch", "Dinner"];
+	const meal = ["Breakfast","BreakfastSnack", "Lunch","EveningSnack", "Dinner"];
 
 	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
 	const mealDisplayValue = meal[mealIndex.row];
@@ -451,7 +451,7 @@ const MyPersonalFoodLabelTab = ({
 		foodName: "",
 		calories: 0,
 	});
-	const meal = ["Breakfast", "Lunch", "Dinner"];
+	const meal = ["Breakfast","BreakfastSnack", "Lunch","EveningSnack", "Dinner"];
 	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
 	const mealDisplayValue = meal[mealIndex.row];
 	const renderMealOption = (title, index) => {

@@ -44,17 +44,23 @@ const getDailyConsumption = async day => {
 	const docSnap = await getDoc(userDailyConsumptionRef);
 	let results = {
 		breakfast: [],
+		breakfastSnack:[],
 		lunch: [],
+		eveningSnack:[],
 		dinner: [],
 	};
 	if (docSnap.exists()) {
 		let breakfastTemp = await getFoodHistory(docSnap.data()?.breakfast);
+		let breakfastSnackTemp = await getFoodHistory(docSnap.data()?.breakfastSnack);
 		let lunchTemp = await getFoodHistory(docSnap.data()?.lunch);
+		let eveningSnackTemp = await getFoodHistory(docSnap.data()?.eveningSnack);
 		let dinnerTemp = await getFoodHistory(docSnap.data()?.dinner);
 
 		results = {
 			breakfast: breakfastTemp,
+			breakfastSnack:breakfastSnackTemp,
 			lunch: lunchTemp,
+			eveningSnack:eveningSnackTemp,
 			dinner: dinnerTemp,
 		};
 		return results;
@@ -87,7 +93,9 @@ const addDailyConsumption = async (data, day, currentMeal) => {
 		if (!docSnap.exists()) {
 			await setDoc(userDailyConsumptionRef, {
 				breakfast: [],
+				breakfastSnack:[],
 				lunch: [],
+				eveningSnack:[],
 				dinner: [],
 			});
 		}
@@ -95,9 +103,17 @@ const addDailyConsumption = async (data, day, currentMeal) => {
 			await updateDoc(userDailyConsumptionRef, {
 				breakfast: arrayUnion(docRef),
 			});
-		} else if (currentMeal == "Lunch") {
+		} else if (currentMeal == "BreakfastSnack") {
+			await updateDoc(userDailyConsumptionRef, {
+				breakfastSnack: arrayUnion(docRef),
+			});
+		}else if (currentMeal == "Lunch") {
 			await updateDoc(userDailyConsumptionRef, {
 				lunch: arrayUnion(docRef),
+			});
+		}else if (currentMeal == "EveningSnack") {
+			await updateDoc(userDailyConsumptionRef, {
+				eveningSnack: arrayUnion(docRef),
 			});
 		} else {
 			await updateDoc(userDailyConsumptionRef, {
@@ -135,6 +151,14 @@ const removeDailyConsumption = async (
 		if (meal === "Breakfast") {
 			await updateDoc(userDailyConsumptionRef, {
 				breakfast: arrayRemove(userConsumptionRef),
+			});
+		}else if (meal === "BreakfastSnack") {
+			await updateDoc(userDailyConsumptionRef, {
+				breakfastSnack: arrayRemove(userConsumptionRef),
+			});
+		}else if (meal === "EveningSnack") {
+			await updateDoc(userDailyConsumptionRef, {
+				eveningSnack: arrayRemove(userConsumptionRef),
 			});
 		} else if (meal === "Lunch") {
 			await updateDoc(userDailyConsumptionRef, {

@@ -2,13 +2,14 @@ import { Layout, Text } from "@ui-kitten/components";
 import { Image, StyleSheet } from "react-native";
 import { FONTS, SIZES } from "../constants";
 
-const HomePageIcon = ({ source, title, data }) => {
+const HomePageIcon = ({ source, title, data ,total}) => {
 	return (
 		<Layout style={[styles.container]}>
 			<Image source={source} style={[styles.image]} />
 			<Layout>
 				<Text style={[styles.title]}>{title}</Text>
-				<Text style={[styles.data]}>{data}</Text>
+				<Text style={[styles.data]}>{data}/{total}</Text>
+				
 			</Layout>
 		</Layout>
 	);

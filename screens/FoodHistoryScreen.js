@@ -65,6 +65,18 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 				return prev;
 			});
 			setFood(prev => Math.round(prev - modalData.calories));
+		}else if (modalData.meal === "BreakfastSnack") {
+			setHistory(prev => {
+				prev.breakfastSnack = prev.breakfastSnack.filter(data => data.id !== modalData.docId);
+				return prev;
+			});
+			setFood(prev => Math.round(prev - modalData.calories));
+		}else if (modalData.meal === "EveningSnack") {
+			setHistory(prev => {
+				prev.eveningSnack = prev.eveningSnack.filter(data => data.id !== modalData.docId);
+				return prev;
+			});
+			setFood(prev => Math.round(prev - modalData.calories));
 		} else if (modalData.meal === "Lunch") {
 			setHistory(prev => {
 				prev.lunch = prev.lunch.filter(data => data.id !== modalData.docId);
@@ -115,6 +127,18 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 					})}
 				</Layout>
 				<Layout>
+					<Text style={styles.title}>BreakfastSnack</Text>
+					{data?.breakfastSnack.map((item, index) => {
+						return (
+							<HistoryComponent
+								key={index}
+								data={item}
+								onPressClose={() => handleClose(item, "BreakfastSnack")}
+							/>
+						);
+					})}
+				</Layout>
+				<Layout>
 					<Text style={styles.title}>Lunch</Text>
 					{data?.lunch.map((item, index) => {
 						return (
@@ -122,6 +146,18 @@ const FoodHistoryScreen = ({ navigation, route }) => {
 								key={index}
 								data={item}
 								onPressClose={() => handleClose(item, "Lunch")}
+							/>
+						);
+					})}
+				</Layout>
+				<Layout>
+					<Text style={styles.title}>EveningSnack</Text>
+					{data?.eveningSnack.map((item, index) => {
+						return (
+							<HistoryComponent
+								key={index}
+								data={item}
+								onPressClose={() => handleClose(item, "EveningSnack")}
 							/>
 						);
 					})}

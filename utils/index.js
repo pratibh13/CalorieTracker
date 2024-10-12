@@ -13,12 +13,18 @@ export const calculateCaloriesNeeded = (isMale, weight, height, age) => {
 	return Math.round(tempBmr);
 };
 
-export const calculateTotalCaloriesConsumed = (breakfast, lunch, dinner) => {
+export const calculateTotalCaloriesConsumed = (breakfast,breakfastSnack, lunch,eveningSnack, dinner) => {
 	let total = 0;
 	breakfast.forEach(meal => {
 		total += meal.totalCalories;
 	});
+	breakfastSnack.forEach(meal => {
+		total += meal.totalCalories;
+	});
 	lunch.forEach(meal => {
+		total += meal.totalCalories;
+	});
+	eveningSnack.forEach(meal => {
 		total += meal.totalCalories;
 	});
 	dinner.forEach(meal => {
