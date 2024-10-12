@@ -7,7 +7,7 @@ import {
 	sendPasswordResetEmail,
 	signOut,
 } from "firebase/auth";
-import { auth } from "../firebase-config";
+import { auth } from "../firebase-config.mjs";
 
 export const createUser = async (email, password) => {
 	try {
@@ -17,6 +17,7 @@ export const createUser = async (email, password) => {
 			password
 		);
 		const user = userCredential.user;
+		console.log(user," Auth : ",auth);
 		return { user, error: null };
 	} catch (error) {
 		const errorCode = error.code;
@@ -36,6 +37,7 @@ export const createUser = async (email, password) => {
 				errorMessage = "Something went wrong";
 				break;
 		}
+		console.log(errorMessage," Auth : ",auth);
 		return { error: errorMessage };
 	}
 };

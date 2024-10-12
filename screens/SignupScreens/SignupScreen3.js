@@ -14,7 +14,7 @@ import {
 	Platform,
 } from "react-native";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase/firebase-config";
+import { auth, db } from "../../firebase/firebase-config.mjs";
 
 const SignupScreen3 = ({ navigation, route }) => {
 	const [age, setAge] = useState(null);
@@ -92,14 +92,15 @@ const SignupScreen3 = ({ navigation, route }) => {
 	};
 
 	return (
-		<KeyboardAvoidingView
+		<>
+		{/* <KeyboardAvoidingView
 			style={{ flex: 1 }}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 			keyboardVerticalOffset={Platform.select({
 				ios: () => -200,
 				android: () => -200,
 			})()}
-		>
+		> */}
 			<FocusedStatusBar
 				barStyle="dark-content"
 				backgroundColor="transparent"
@@ -403,7 +404,8 @@ const SignupScreen3 = ({ navigation, route }) => {
 					</Layout>
 				</Layout>
 			</TouchableWithoutFeedback>
-		</KeyboardAvoidingView>
+		{/* </KeyboardAvoidingView> */}
+		</>
 	);
 };
 

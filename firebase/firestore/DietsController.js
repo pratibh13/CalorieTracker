@@ -1,5 +1,5 @@
 import { collection, getDoc, getDocs, limit, query } from "firebase/firestore";
-import { db } from "../firebase-config";
+import { db } from "../firebase-config.mjs";
 
 const getSingleDoc = async ref => {
 	const docSnap = await getDoc(ref);

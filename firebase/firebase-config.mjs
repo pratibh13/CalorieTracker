@@ -10,22 +10,27 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-	apiKey: "AIzaSyC8ciVcLWr_nWnTBz57XmcWflt7rdEjQxc",
-	authDomain: "watsonxtracker.firebaseapp.com",
-	projectId: "watsonxtracker",
-	storageBucket: "watsonxtracker.appspot.com",
-	messagingSenderId: "773768391788",
-	appId: "1:773768391788:web:9bd29ba51ecff8be0ffc49",
-	measurementId: "G-0MQ0JC9C70"
+  apiKey: "AIzaSyDfNBd8PAAmNsMWsuwDPiQjwQFa_Qc9Wtw",
+  authDomain: "rithackathon.firebaseapp.com",
+  databaseURL: "https://rithackathon-default-rtdb.firebaseio.com",
+  projectId: "rithackathon",
+  storageBucket: "rithackathon.appspot.com",
+  messagingSenderId: "534455012889",
+  appId: "1:534455012889:web:4c6bb25624b7c00299e488",
+  measurementId: "G-MGY55WESG5"
   };
 
 // TODO init firebase app once only
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
+console.log("App: ",app);
+console.log("Auth: ",auth);
+console.log("DB: ",db);
 // Initialize Firebase
 
 export { app, auth, db };

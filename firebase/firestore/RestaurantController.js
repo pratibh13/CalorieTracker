@@ -1,5 +1,5 @@
 import { collection, getDocs, limit, query } from "firebase/firestore";
-import { db } from "../firebase-config";
+import { db } from "../firebase-config.mjs";
 
 const fetchRestaurantData = async () => {
 	const restaurantRef = collection(db, "restaurants");

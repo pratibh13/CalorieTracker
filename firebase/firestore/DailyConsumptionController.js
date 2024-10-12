@@ -8,7 +8,7 @@ import {
 	setDoc,
 	updateDoc,
 } from "firebase/firestore";
-import { auth, db } from "../firebase-config";
+import { auth, db } from "../firebase-config.mjs";
 
 const getFoodHistory = async refs => {
 	if (refs == null) {

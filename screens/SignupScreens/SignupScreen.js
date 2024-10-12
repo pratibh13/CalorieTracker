@@ -19,7 +19,7 @@ import {
 import { CustomButton, FocusedStatusBar } from "../../components";
 import { COLORS, FONTS, SHADOWS, SIZES, assets } from "../../constants";
 import { createUser } from "../../firebase/auth/emailProvider";
-import { db } from "../../firebase/firebase-config";
+import { db } from "../../firebase/firebase-config.mjs";
 import { setDoc, serverTimestamp, doc } from "firebase/firestore";
 import { validatePassword } from "../../utils";
 
@@ -103,6 +103,7 @@ const SignupScreen = ({ navigation }) => {
 				// clear passwords
 				clearInputs();
 				setSignupLoading(false);
+				console.log("Error while creating the user");
 				return;
 			}
 

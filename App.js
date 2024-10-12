@@ -34,7 +34,7 @@ import {
 // setup fonts
 import { isLoading, useFonts } from "expo-font";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./firebase/firebase-config";
+import { auth, db } from "./firebase/firebase-config.mjs";
 import customTheme from "./constants/custom-theme.json";
 import { COLORS, SIZES } from "./constants";
 import { doc, getDoc } from "firebase/firestore";

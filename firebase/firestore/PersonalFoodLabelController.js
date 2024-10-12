@@ -1,4 +1,4 @@
-import { auth, db } from "../firebase-config";
+import { auth, db } from "../firebase-config.mjs";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 const createFoodLabel = async data => {

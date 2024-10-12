@@ -20,7 +20,7 @@ import { COLORS, FONTS, SIZES, SHADOWS, assets } from "../constants";
 import { CustomButton, EditButton, FocusedStatusBar } from "../components";
 import { calculateBmi } from "../utils";
 import { UserController } from "../firebase/firestore/UserController";
-const TITLEBAR_HEIGHT = Platform.OS === "ios" ? 44 : 56;
+const TITLEBAR_HEIGHT =  56;
 
 const activityLevelSelection = [
 	"Not Very Active",
@@ -194,14 +194,15 @@ const ProfileScreen = () => {
 	};
 
 	return (
-		<KeyboardAvoidingView
+		<>
+		 {/* <KeyboardAvoidingView
 			style={{ flex: 1 }}
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 			keyboardVerticalOffset={Platform.select({
 				ios: () => -200,
 				android: () => -200,
 			})()}
-		>
+		> */}
 			<FocusedStatusBar
 				backgroundColor={COLORS.primary}
 				barStyle="dark-content"
@@ -420,7 +421,8 @@ const ProfileScreen = () => {
 					<Spinner status="primary" size="giant" />
 				</Layout>
 			)}
-		</KeyboardAvoidingView>
+		{/* </KeyboardAvoidingView> */}
+		</>
 	);
 };
 
