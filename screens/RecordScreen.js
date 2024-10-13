@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';  // for camera icon
+import { View, TouchableOpacity, Image } from 'react-native';
 import {
 	Layout,
 	Text,
@@ -16,13 +19,11 @@ import {
 	SelectItem,
 } from "@ui-kitten/components";
 import {
-	Image,
 	StyleSheet,
 	FlatList,
 	SafeAreaView,
 	Keyboard,
 	Platform,
-	TouchableOpacity,
 } from "react-native";
 import {
 	FocusedStatusBar,
@@ -62,6 +63,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const [loadingSearch, setLoadingSearch] = useState(true);
 	const [hasError, setHasError] = useState(false);
 	const [isSuccessTextVisible, setIsSuccessTextVisible] = useState(false);
+	const [imageUri, setImageUri] = useState(null);
 
 	const [modalData, setModalData] = useState({
 		foodName: "",
@@ -193,10 +195,42 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		<AutocompleteItem key={index} title={item.title} />
 	);
 
+	const openCamera = async () => {
+		// Request camera permissions
+		const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+		if (!permissionResult.granted) {
+			alert("Permission to access camera is required!");
+			return;
+		}
+		const result = await ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [4, 3],
+			quality: 1,
+		});
+
+		if (!result.cancelled) {
+			setImageUri(result.uri);  // Store the image URI
+		}
+	};
+	const cancelImage = () => {
+		setImageUri(null); // Reset the image URI
+	};
+	const submitImage = () => {
+		alert("Image submitted!"); // Add your logic here for submitting the image
+	  };
 	const renderIcon = props => (
-		<TouchableOpacity onPress={() => handleSearch()}>
-			<Icon {...props} name="search-outline" />
-		</TouchableOpacity>
+		<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+			{/* Search Icon */}
+			<TouchableOpacity onPress={() => handleSearch()} style={{ paddingRight: 10 }}>
+				<Icon {...props} name="search-outline" />
+			</TouchableOpacity>
+
+			{/* Camera Icon */}
+			<TouchableOpacity onPress={() => openCamera()}>
+				<Ionicons name="camera-outline" size={28} color={COLORS.primary} />
+			</TouchableOpacity>
+		</View>
 	);
 
 	return (
@@ -717,6 +751,53 @@ const RecordScreen = ({ navigation }) => {
 	);
 };
 const styles = StyleSheet.create({
+	queryText: {
+		fontSize: 18,
+		fontWeight: 'bold',
+	},
+	autocomplete: {
+		marginVertical: 10,
+	},
+	imagePreviewContainer: {
+		marginTop: 10,
+		alignItems: 'center',
+	},
+	imagePreview: {
+		width: 200,
+		height: 200,
+		borderRadius: 10,
+	},
+	imageActions: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		marginTop: 10,
+	},
+	examplesContainer: {
+		marginTop: 20,
+	},
+	examplesTitle: {
+		fontWeight: 'bold',
+		fontSize: 16,
+	},
+	examplesText: {
+		fontSize: 14,
+		marginVertical: 5,
+	},
+	headerContainer: {
+		width: "100%",
+		backgroundColor: "#F9F9F9",
+		alignItems: "center",
+		justifyContent: "center",
+		paddingVertical: "5%",
+		position: "relative", // Added for camera icon positioning
+		...SHADOWS.dark,
+	},
+	cameraIcon: {
+		position: "absolute",
+		right: 20, // Adjust the position of the icon
+		top: "50%",
+		transform: [{ translateY: -10 }],
+	},
 	headerContainer: {
 		width: "100%",
 		backgroundColor: "#F9F9F9",
