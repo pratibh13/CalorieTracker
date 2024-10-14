@@ -209,15 +209,19 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			quality: 1,
 		});
 
+
 		if (!result.cancelled) {
-			setImageUri(result.uri);  // Store the image URI
+			setImageUri(result.assets[0].uri);  // Store the image URI
+			// console.log(result.assets[0].uri);
 		}
 	};
 	const cancelImage = () => {
 		setImageUri(null); // Reset the image URI
+		console.log(imageUri);
 	};
 	const submitImage = () => {
-		alert("Image submitted!"); // Add your logic here for submitting the image
+		console.log("Image submitted!"); // Add your logic here for submitting the image
+		console.log(imageUri);
 	  };
 	const renderIcon = props => (
 		<View style={{ flexDirection: 'row', alignItems: 'center' }}>

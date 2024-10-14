@@ -20,6 +20,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 	const [age, setAge] = useState(null);
 	const [height, setHeight] = useState(null);
 	const [weight, setWeight] = useState(null);
+	const [medicalCondition, setmedicalCondition] = useState("None");
 	const [isMaleToggled, setIsMaleToggled] = useState(true);
 	console.log(route.params);
 	const { selectedActivityStr, setIsSetupComplete } = route?.params;
@@ -73,6 +74,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 			setIsSignupLoading(false);
 			return;
 		}
+		
 		// no errors, create user details and update to firestore
 		const userDocRef = doc(db, "users", auth.currentUser.uid);
 		await setDoc(
@@ -84,6 +86,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 				weight: +weight,
 				activityLevel: selectedActivityStr,
 				gender: isMaleToggled ? "male" : "female",
+				medicalCondition: medicalCondition,
 			},
 			{ merge: true }
 		);
@@ -356,6 +359,58 @@ const SignupScreen3 = ({ navigation, route }) => {
 								/>
 							</Layout>
 						</Layout>
+
+						{/* //Adding Medical Conditions */}
+						<Layout
+							style={{
+								paddingVertical: SIZES.small,
+								flexDirection: "row",
+								alignItems: "center",
+								width: "95%",
+							}}
+						>
+							<Layout
+								style={{
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+									width: "100%",
+								}}
+							>
+								<Text
+									style={{
+										fontFamily: FONTS.semiBold,
+										fontSize: SIZES.extraLarge,
+										color: COLORS.gray,
+									}}
+								>
+									Medical Condition
+								</Text>
+								<Input
+									style={{
+										color: COLORS.primary,
+										fontFamily: FONTS.semiBold,
+										fontSize: SIZES.large,
+										bsackgroundColor: "transparent",
+										minWidth: 75,
+									}}
+									multiline={true}
+									placeholder="E.g. Diabetes"
+									value={age}
+									onChangeText={nextValue => setmedicalCondition(nextValue)}
+									keyboardType="Text"
+								/>
+							</Layout>
+						</Layout>
+						<Divider
+							style={{
+								height: 2,
+								backgroundColor: COLORS.lightgray,
+								width: "95%",
+								alignSelf: "center",
+							}}
+						/>
+
 						<Layout style={{ width: "95%" }}>
 							<Text
 								style={{
