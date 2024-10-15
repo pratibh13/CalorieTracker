@@ -37,6 +37,7 @@ import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
 
+
 const showEvent = Platform.select({
 	android: "keyboardDidShow",
 	default: "keyboardWillShow",
@@ -49,6 +50,7 @@ const hideEvent = Platform.select({
 
 const filter = (item, query) =>
 	item.title.toLowerCase().includes(query.toLowerCase());
+  
 
 const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	// autocomplete
@@ -76,6 +78,18 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 
 	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
 	const mealDisplayValue = meal[mealIndex.row];
+
+	const unit = ["piece","gram","cup"];
+
+	const [unitIndex, setUnitIndex] = useState(new IndexPath(0));
+	const UnitDisplayValue = unit[unitIndex.row];
+	modalData.unit = UnitDisplayValue;
+
+	const quantity = ["1","2","3","4","5"];
+
+	const [quantityIndex, setQuantityIndex] = useState(new IndexPath(0));
+	const QuantityDisplayValue = quantity[quantityIndex.row];
+	modalData.quantity = QuantityDisplayValue;
 
 	useEffect(() => {
 		// auto complete
@@ -133,10 +147,16 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			minute.toString().padStart(2, "0") +
 			":" +
 			second.toString().padStart(2, "0");
+		
+		let calorieMap = {
+			'gram': 1, 
+			'piece': 100, 
+			'cup': 150  
+		};
 
 		const newConsumption = {
 			foodName: modalData.foodName,
-			totalCalories: modalData.calories,
+			totalCalories: Math.round(Math.round((modalData.calories)/100) *calorieMap[modalData.unit] * modalData.quantity),
 			servingQuantity: modalData.quantity,
 			servingUnit: modalData.unit,
 			time: currentTime,
@@ -179,6 +199,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const renderMealOption = (title, index) => {
 		return <SelectItem title={title} key={index} />;
 	};
+
 	// autocomplete
 	const onSelect = index => {
 		const selected = suggestions[index].title;
@@ -377,15 +398,41 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 														style={styles.rightText}
 													>{`${modalData.calories} kcal`}</Text>
 												</Text>
+												
 												<Text style={styles.leftText}>
+       											 {"Serving quantity: "}
+													<Text style={styles.rightText}>
+													<Select
+													style={styles.unitSelect}
+													placeholder="Select quantity"
+													value={QuantityDisplayValue}
+													selectedIndex={quantityIndex}
+													onSelect={index => setQuantityIndex(index)}
+													>
+														{quantity.map(renderMealOption)}
+													</Select>
+													</Text>
+												</Text>
+
+												{/* <Text style={styles.leftText}>
 													{"Serving quantity: "}
 													<Text style={styles.rightText}>
 														{modalData.quantity}
 													</Text>
-												</Text>
+												</Text> */}
 												<Text style={styles.leftText}>
 													{"Serving unit: "}
-													<Text style={styles.rightText}>{modalData.unit}</Text>
+													<Text style={styles.rightText}>
+													<Select
+													style={styles.unitSelect}
+													placeholder="Select a unit"
+													value={UnitDisplayValue}
+													selectedIndex={unitIndex}
+													onSelect={index => setUnitIndex(index)}
+													>
+														{unit.map(renderMealOption)}
+													</Select>
+													</Text>
 												</Text>
 											</Layout>
 											{isSuccessTextVisible && (
@@ -527,20 +574,29 @@ const MyPersonalFoodLabelTab = ({
 			minute.toString().padStart(2, "0") +
 			":" +
 			second.toString().padStart(2, "0");
+
+		let calorieMap = {
+			'gram': 1, 
+			'piece': 100, 
+			'cup': 150  
+		};
+		
 		const newConsumption = {
 			foodName: modalData.foodName,
-			totalCalories: modalData.calories,
-			servingQuantity: 1,
-			servingUnit: "serving",
+			totalCalories: Math.round(Math.round((modalData.calories)/100) *calorieMap[modalData.unit] * modalData.quantity),
+			servingQuantity: modalData.quantity,
+			servingUnit: modalData.unit,
 			time: currentTime,
 			dailyConsumptionId: todayAsStr,
 		};
+		console.log(newConsumption);
 		const { success } = await DailyConsumptionController.addDailyConsumption(
 			newConsumption,
 			todayAsStr,
 			meal[mealIndex.row]
 		);
 
+		
 		if (success) {
 			setIsSuccessTextVisible(true);
 			setTimeout(() => {
@@ -548,6 +604,7 @@ const MyPersonalFoodLabelTab = ({
 				setIsSuccessTextVisible(false);
 				// close modal
 				setAddConsumptionPanelVisible(false);
+				
 			}, 2000);
 		}
 	};
@@ -841,6 +898,12 @@ const styles = StyleSheet.create({
 		fontFamily: FONTS.font,
 		fontSize: SIZES.medium,
 		width: "100%",
+		marginBottom: SIZES.base,
+	},
+	unitSelect: {
+		fontFamily: FONTS.font,
+		fontSize: SIZES.medium,
+		width: "30%",
 		marginBottom: SIZES.base,
 	},
 	content: {
