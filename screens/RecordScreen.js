@@ -66,6 +66,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const [hasError, setHasError] = useState(false);
 	const [isSuccessTextVisible, setIsSuccessTextVisible] = useState(false);
 	const [imageUri, setImageUri] = useState(null);
+	const [isRecommended, setIsRecommended] = useState(true);
+	const [isRecommendedDescription, setIsRecommendedDescription] = useState("It is rich in protein");
 
 	const [modalData, setModalData] = useState({
 		foodName: "",
@@ -74,7 +76,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		unit: "",
 	});
 
-	const meal = ["Breakfast","BreakfastSnack", "Lunch","EveningSnack", "Dinner"];
+	const meal = ["Breakfast", "BreakfastSnack", "Lunch", "EveningSnack", "Dinner"];
 
 	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
 	const mealDisplayValue = meal[mealIndex.row];
@@ -241,9 +243,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		console.log(imageUri);
 	};
 	const submitImage = () => {
-		console.log("Image submitted!"); // Add your logic here for submitting the image
-		console.log(imageUri);
-	  };
+		alert("Image submitted!"); // Add your logic here for submitting the image
+	};
 	const renderIcon = props => (
 		<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 			{/* Search Icon */}
@@ -326,6 +327,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 											renderItem={({ item }) => (
 												<ResultsFoodLabel
 													data={item}
+													isRecommended={isRecommended}
+													isRecommendedDescription={isRecommendedDescription}
 													onPressAdd={() => handleAdd(item)}
 												/>
 											)}
@@ -536,7 +539,7 @@ const MyPersonalFoodLabelTab = ({
 		foodName: "",
 		calories: 0,
 	});
-	const meal = ["Breakfast","BreakfastSnack", "Lunch","EveningSnack", "Dinner"];
+	const meal = ["Breakfast", "BreakfastSnack", "Lunch", "EveningSnack", "Dinner"];
 	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
 	const mealDisplayValue = meal[mealIndex.row];
 	const renderMealOption = (title, index) => {

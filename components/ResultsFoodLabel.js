@@ -3,7 +3,7 @@ import { Layout } from "@ui-kitten/components";
 import { COLORS, FONTS, SIZES } from "../constants";
 import AddButton from "./AddButton";
 
-const ResultsFoodLabel = ({ data, onPressAdd }) => {
+const ResultsFoodLabel = ({ data, isRecommended, isRecommendedDescription, onPressAdd }) => {
 	return (
 		<Layout style={styles.content}>
 			<Layout style={styles.container}>
@@ -12,6 +12,10 @@ const ResultsFoodLabel = ({ data, onPressAdd }) => {
 					<Text
 						style={styles.foodLabelCalText}
 					>{`${data.calories} kcal, ${data.servingQuantity} ${data.servingUnit}`}</Text>
+					<Text style={isRecommended ? { color: 'green' } : { color: "red" }}>
+						{isRecommended ? "Recommended" : "Not Recommended"}
+					</Text>
+					<Text style={styles.isRecommendedDescription}>Why: {isRecommendedDescription}</Text>
 				</Layout>
 				<Layout style={styles.foodLabelRight}>
 					<AddButton color={COLORS.primary} onPress={onPressAdd} />
