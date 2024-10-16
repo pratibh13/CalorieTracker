@@ -32,7 +32,7 @@ import {
 	ResultsFoodLabel,
 } from "../components";
 import { COLORS, FONTS, SIZES, assets, SHADOWS } from "../constants";
-import { searchFood } from "../services";
+import { searchFood, get_nutrition_from_ai, submitImage } from "../services";
 import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
@@ -218,6 +218,82 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		<AutocompleteItem key={index} title={item.title} />
 	);
 
+	const visualSearch = async () => {
+		let foodItems = [];
+		try {
+			// Ensure the camera opens before proceeding
+			const image = await openCamera(); 
+			setLoadingSearch(true);
+			setIsSearchBarVisible(false);
+			let response;
+			if (image) {
+				try {
+					response = await submitImage(image);
+				} catch (error) {
+					console.error("Error submitting image:", error);
+					response = null;
+				}
+				if (response === undefined) {
+					console.log("No response received from submitImage()");
+				}
+			}
+			if (!response || !response.foods) {
+				throw new Error("No foods found in the response.");
+			}
+			const list_of_foods = [];
+			// Iterate over the 'foods' array and push each item to 'list_of_foods'
+			response.foods.forEach((food) => {
+				list_of_foods.push(food);
+			});
+	
+			try {
+				// Use Promise.all to wait for all async operations to finish
+				await Promise.all(list_of_foods.map(async (food) => {
+					await get_nutri_data(food);
+				}));
+				// Set results after all data has been fetched
+				console.log("foodItems",foodItems);
+				setResults(foodItems);
+				setHasError(false);
+			} catch (error) {
+				resetSearchFrom();
+				setHasError(true);
+			} finally {
+				setLoadingSearch(false);
+			}
+		} catch (error) {
+			console.error("Error in visualSearch:", error);
+			setHasError(true);
+			setLoadingSearch(false);
+		}
+	
+		// Fetch nutrition Data from DB or AI
+		async function get_nutri_data(value) {
+			const { data, error } = await searchFood(value);
+			if (error) {
+				throw error;
+			}
+			if (data.length === 0) {
+				// If the food item is not found in the database, fetch it from the AI
+				const jsonResponse = await get_nutrition_from_ai(value);
+				const foodItems2 = [
+					{
+						id: parseInt(jsonResponse.id),
+						name: jsonResponse.name,
+						calories: parseInt(jsonResponse.calories),
+						protein: parseInt(jsonResponse.protein),
+						carbs: parseInt(jsonResponse.carbs),
+						fat: parseFloat(jsonResponse.fat),
+						servingQuantity: parseInt(jsonResponse.servingQuantity),
+						servingUnit: jsonResponse.servingUnit
+					}];
+				foodItems.push(foodItems2[0]); // Push AI data to foodItems array
+			}else{
+				foodItems.push(data[0]); // Push DB data to foodItems array
+			}
+		}
+	};
+
 	const openCamera = async () => {
 		// Request camera permissions
 		const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -233,18 +309,18 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		});
 
 
-		if (!result.cancelled) {
+		if (!result.canceled) {
 			setImageUri(result.assets[0].uri);  // Store the image URI
-			// console.log(result.assets[0].uri);
+			return result.assets[0];
 		}
 	};
 	const cancelImage = () => {
 		setImageUri(null); // Reset the image URI
 		console.log(imageUri);
 	};
-	const submitImage = () => {
-		alert("Image submitted!"); // Add your logic here for submitting the image
-	};
+	// const submitImage = () => {
+	// 	alert("Image submitted!"); // Add your logic here for submitting the image
+	// };
 	const renderIcon = props => (
 		<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 			{/* Search Icon */}
@@ -253,7 +329,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			</TouchableOpacity>
 
 			{/* Camera Icon */}
-			<TouchableOpacity onPress={() => openCamera()}>
+			<TouchableOpacity onPress={() => visualSearch()}>
 				<Ionicons name="camera-outline" size={28} color={COLORS.primary} />
 			</TouchableOpacity>
 		</View>
