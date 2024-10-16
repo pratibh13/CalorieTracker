@@ -37,7 +37,6 @@ import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
 
-
 const showEvent = Platform.select({
 	android: "keyboardDidShow",
 	default: "keyboardWillShow",
@@ -69,9 +68,23 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const [isRecommended, setIsRecommended] = useState(true);
 	const [isRecommendedDescription, setIsRecommendedDescription] = useState("It is rich in protein");
 
+	const [modalDataindex, setModalDataIndex] = useState({
+		foodName: "",
+		calories: 0,
+		protien:0,
+		carbs:0,
+		fat:0,
+		quantity: 0,
+		unit: "",
+	});
+	
+
 	const [modalData, setModalData] = useState({
 		foodName: "",
 		calories: 0,
+		protien:0,
+		carbs:0,
+		fat:0,
 		quantity: 0,
 		unit: "",
 	});
@@ -81,17 +94,47 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const [mealIndex, setMealIndex] = useState(new IndexPath(0));
 	const mealDisplayValue = meal[mealIndex.row];
 
-	const unit = ["piece","gram","cup"];
+	const unit = ["cup","gram","piece","oz"];
+	const calorieMap = {
+		'gram': 1, 
+		'piece': 100, 
+		'cup': 150,
+		"oz":  30
+	};
 
 	const [unitIndex, setUnitIndex] = useState(new IndexPath(0));
-	const UnitDisplayValue = unit[unitIndex.row];
-	modalData.unit = UnitDisplayValue;
+	const UnitDisplayValue = unit[unitIndex.row];	
+	// setModalData(modalData.unit = unitIndex);
+	// handleModalChange(unit,unitIndex)
+	// modalData.unit = unitIndex;
+
+	// const handleModalChange = (field,newValue) => {
+	// 	if(field==unit) setUnitIndex(newValue);
+	// 	else setQuantityIndex(newValue)
+	  
+	// 	// Use setModalData to update the modal data immutably
+	// 	setModalData((prevModalData) => ({
+	// 	  ...prevModalData,    // Spread previous modalData to keep other fields intact
+	// 	  [field]: newValue,  // Update only the 'unit' field
+	// 	}));
+	//   };
+
+	
 
 	const quantity = ["1","2","3","4","5"];
 
 	const [quantityIndex, setQuantityIndex] = useState(new IndexPath(0));
 	const QuantityDisplayValue = quantity[quantityIndex.row];
-	modalData.quantity = QuantityDisplayValue;
+	// modalData.quantity = QuantityDisplayValue;
+	// handleModalChange(quantity,QuantityDisplayValue)
+
+	useEffect(() => {
+		handleModalChange('unit', UnitDisplayValue); // 'unit' as the field
+	  }, [unitIndex]);
+	  
+	  useEffect(() => {
+		handleModalChange('quantity', QuantityDisplayValue); // 'quantity' as the field
+	  }, [quantityIndex]);
 
 	useEffect(() => {
 		// auto complete
@@ -115,12 +158,14 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		}
 		setLoadingSearch(true);
 		setIsSearchBarVisible(false);
+		
 		const { data, error } = await searchFood(value);
 		if (error) {
 			resetSearchFrom();
 			setHasError(true);
 			return;
 		}
+		console.log(data)
 		setResults(data);
 		setHasError(false);
 		setLoadingSearch(false);
@@ -158,7 +203,10 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 
 		const newConsumption = {
 			foodName: modalData.foodName,
-			totalCalories: Math.round(Math.round((modalData.calories)/100) *calorieMap[modalData.unit] * modalData.quantity),
+			totalCalories: modalData.calories,
+			protien:modalData.protien,
+			carbs:modalData.carbs,
+			fat:modalData.fat,
 			servingQuantity: modalData.quantity,
 			servingUnit: modalData.unit,
 			time: currentTime,
@@ -187,13 +235,31 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		useState(false);
 
 	const handleAdd = data => {
+		console.log(" Data while handleAdd",data)
+		console.log("calorie Data while handleAdd",data.name)
 		if (data) {
+			console.log("inside data")
+			console.log("Modal Data while handleAdd inside",modalData)
 			setModalData({
 				foodName: data.name,
 				calories: data.calories,
+				protien:isNaN(data.protien)?0:data.protien,
+			    carbs:data.carbs==undefined?0:data.carbs,
+			    fat:data.fat==undefined?0:data.fat, 
 				quantity: data.servingQuantity,
 				unit: data.servingUnit,
 			});
+			setModalDataIndex({
+				foodName: data.name,
+				calories: data.calories,
+				protien:isNaN(data.protien)?0:data.protien,
+			    carbs:data.carbs==undefined?0:data.carbs,
+			    fat:data.fat==undefined?0:data.fat, 
+				quantity: data.servingQuantity,
+				unit: data.servingUnit,
+			});
+			
+			console.log("Modal Data while handleAdd",modalData)
 			setAddConsumptionPanelVisible(true);
 		}
 	};
@@ -201,6 +267,58 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const renderMealOption = (title, index) => {
 		return <SelectItem title={title} key={index} />;
 	};
+
+
+	const recalculateNutritionalValues = (updatedModalData) => {
+		const { calories, protien, carbs, fat, unit, quantity } = updatedModalData;
+		
+		 // Debugging: Log inputs
+		 console.log("Input values: ", {
+			calories,
+			protien,
+			carbs,
+			fat,
+			unit,
+			quantity,
+			unitMultiplier: calorieMap[unit],
+		  });
+		
+		  // Ensure `calorieMap[unit]` exists
+		  if (!calorieMap[unit]) {
+			console.error(`Unit '${unit}' not found in calorieMap.`);
+			return {};
+		  }
+		  console.log("Result state ",results)
+
+		  const numericQuantity = parseInt(quantity, 10);
+		return {
+			calories: parseFloat((modalDataindex.calories/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
+			protien: parseFloat((modalDataindex.protien/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
+			carbs: parseFloat((modalDataindex.carbs/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
+			fat: parseFloat((modalDataindex.fat/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
+		};
+	  };
+	
+	  // Function to handle any changes in serving size or quantity
+	  const handleModalChange = (field, newValue) => {
+		setModalData((prevModalData) => {
+		  const updatedModalData = {
+			...prevModalData,
+			[field]: newValue, // Update the specific field (e.g., 'unit', 'quantity')
+		  };
+	  console.log("Updated Model data",updatedModalData);
+	  console.log("Updated ModelIndex data",modalDataindex);
+		  const recalculatedValues = recalculateNutritionalValues(updatedModalData);
+		  console.log("recalculatedValues Model data",recalculatedValues);
+		  console.log("recalculatedValues ModelIndex data",modalDataindex);
+		  return {
+			...updatedModalData,
+			...recalculatedValues, // Update recalculated values
+		  };
+		});
+	  };
+	 
+
 
 	// autocomplete
 	const onSelect = index => {
@@ -401,6 +519,24 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 														style={styles.rightText}
 													>{`${modalData.calories} kcal`}</Text>
 												</Text>
+												<Text style={styles.leftText}>
+													{"Protein: "}
+													<Text
+														style={styles.rightText}
+													>{`${modalData.protien} gm`}</Text>
+												</Text>
+												<Text style={styles.leftText}>
+													{"Carbs: "}
+													<Text
+														style={styles.rightText}
+													>{`${modalData.carbs} gm`}</Text>
+												</Text>
+												<Text style={styles.leftText}>
+													{"Fats: "}
+													<Text
+														style={styles.rightText}
+													>{`${modalData.fat} gm`}</Text>
+												</Text>
 												
 												<Text style={styles.leftText}>
        											 {"Serving quantity: "}
@@ -410,6 +546,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 													placeholder="Select quantity"
 													value={QuantityDisplayValue}
 													selectedIndex={quantityIndex}
+
+            	
 													onSelect={index => setQuantityIndex(index)}
 													>
 														{quantity.map(renderMealOption)}
@@ -429,7 +567,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 													<Select
 													style={styles.unitSelect}
 													placeholder="Select a unit"
-													value={UnitDisplayValue}
+												 value={UnitDisplayValue}
 													selectedIndex={unitIndex}
 													onSelect={index => setUnitIndex(index)}
 													>
@@ -583,7 +721,7 @@ const MyPersonalFoodLabelTab = ({
 			'piece': 100, 
 			'cup': 150  
 		};
-		
+		console.log("Handle record ",modalData);
 		const newConsumption = {
 			foodName: modalData.foodName,
 			totalCalories: Math.round(Math.round((modalData.calories)/100) *calorieMap[modalData.unit] * modalData.quantity),
@@ -908,6 +1046,7 @@ const styles = StyleSheet.create({
 		fontSize: SIZES.medium,
 		width: "30%",
 		marginBottom: SIZES.base,
+		minWidth:120
 	},
 	content: {
 		alignItems: "center",
