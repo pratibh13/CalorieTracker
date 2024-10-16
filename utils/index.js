@@ -15,22 +15,46 @@ export const calculateCaloriesNeeded = (isMale, weight, height, age) => {
 
 export const calculateTotalCaloriesConsumed = (breakfast,breakfastSnack, lunch,eveningSnack, dinner) => {
 	let total = 0;
+	let totalProtien=0;
+	let totalCarbs=0;
+	let totalFat=0;
 	breakfast.forEach(meal => {
 		total += meal.totalCalories;
+		totalProtien+=meal.protien;
+	    totalCarbs+=meal.carbs;
+	    totalFat+=meal.fat;
 	});
 	breakfastSnack.forEach(meal => {
 		total += meal.totalCalories;
+		totalProtien+=meal.protien;
+	    totalCarbs+=meal.carbs;
+	    totalFat+=meal.fat;
 	});
 	lunch.forEach(meal => {
 		total += meal.totalCalories;
+		totalProtien+=meal.protien;
+	    totalCarbs+=meal.carbs;
+	    totalFat+=meal.fat;
 	});
 	eveningSnack.forEach(meal => {
 		total += meal.totalCalories;
+		totalProtien+=meal.protien;
+	    totalCarbs+=meal.carbs;
+	    totalFat+=meal.fat;
 	});
 	dinner.forEach(meal => {
 		total += meal.totalCalories;
+		totalProtien+=meal.protien;
+	    totalCarbs+=meal.carbs;
+	    totalFat+=meal.fat;
 	});
-	return Math.round(total);
+	const food={
+		calorie:Math.round(total),
+		protien:Math.round(totalProtien),
+		carbs:Math.round(totalCarbs),
+		fat:Math.round(totalFat)
+	}
+	return food;
 };
 
 export const calculateRemainingCalories = (baseGoal, food, exercise) => {

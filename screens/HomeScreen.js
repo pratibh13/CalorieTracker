@@ -38,10 +38,10 @@ const HomeScreen = ({ navigation }) => {
 	const [exercise, setExercise] = useState(0);
 
 	// Macronutrient state variables
-	const [protein, setProtein] = useState(50);
-	const [carbs, setCarbs] = useState(200);
-	const [fats, setFats] = useState(70);
-	const [fiber, setFiber] = useState(30);
+	const [protein, setProtein] = useState(0);
+	const [carbs, setCarbs] = useState(0);
+	const [fats, setFats] = useState(0);
+	
 
 	const focusDate = id => {
 		const temp = [];
@@ -116,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
 				const history = await DailyConsumptionController.getDailyConsumption(
 					todayAsStr
 				);
-				// console.log(history);
+				console.log("History in HomeScreen",history);
 				setHistory(history);
 				let foodConsumed = calculateTotalCaloriesConsumed(
 					history.breakfast,
@@ -126,14 +126,13 @@ const HomeScreen = ({ navigation }) => {
 					history.dinner
 				);
 				setBaseGoal(calculateCaloriesNeeded(isMale, weight, height, age));
-				setFood(foodConsumed);
+				setFood(foodConsumed.calorie);
+				setProtein(foodConsumed.protien)
+				setCarbs(foodConsumed.carbs)
+				setFats(foodConsumed.fat)
 				setExercise(activityLevel);
 
-				// Update macronutrients
-				setProtein(history.protein || 0);
-				setCarbs(history.carbs || 0);
-				setFats(history.fats || 0);
-				setFiber(history.fiber || 0);
+			
 
 				setIsHistoryLoading(false);
 			} catch (error) {
@@ -272,6 +271,9 @@ const HomeScreen = ({ navigation }) => {
 													(calculateRemainingCalories(
 														baseGoal,
 														food,
+														protein,
+														carbs,
+														fats,
 														exercise
 													) /
 														(baseGoal + exercise)) *

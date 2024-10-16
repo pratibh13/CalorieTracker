@@ -11,6 +11,9 @@ export const searchFood = async query => {
 				id: index,
 				name: result?.food_name,
 				calories: result?.nf_calories,
+				protien:result?.nf_protein,
+				carbs:result?.nf_total_carbohydrate,
+				fat:result?.nf_total_fat,
 				servingQuantity: result?.serving_qty,
 				servingUnit: result?.serving_unit,
 			};
@@ -34,8 +37,8 @@ const searchFoodQuery = async query => {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"x-app-id": process.env.NUTRITIONIX_APP_ID,
-			"x-app-key": process.env.NUTRITIONIX_APP_KEY,
+			"x-app-id": "7c877b4e",
+			"x-app-key": "8c4d2b6275a0df739b1835f4310397c0",
 		},
 		body: JSON.stringify({
 			query: `${query}`,

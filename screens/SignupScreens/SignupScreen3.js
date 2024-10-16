@@ -396,7 +396,7 @@ const SignupScreen3 = ({ navigation, route }) => {
 									}}
 									multiline={true}
 									placeholder="E.g. Diabetes"
-									value={age}
+									value={medicalCondition}
 									onChangeText={nextValue => setmedicalCondition(nextValue)}
 									keyboardType="Text"
 								/>
