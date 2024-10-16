@@ -85,3 +85,47 @@ const autoCompleteQuery = async query => {
 		console.log(error);
 	}
 };
+
+
+export const get_nutrition_from_ai = async (value) => {
+	try {
+		const response = await fetch(`http://127.0.0.1:8000/get-nutrition-data/?message=${value}`, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+			},
+		})
+		if (!response.ok) {
+			throw new Error(`Non-200 response: ${response.statusText}`);
+		}
+		const jsonResponse =  await response.json();
+		console.log(jsonResponse);
+		return jsonResponse;
+	} catch (error) {
+		console.error("Error submitting image:", error);
+	}
+};
+
+
+export const submitImage = async (image) => {
+	try {
+		const file = new File([await fetch(image.uri).then(response => response.blob())], image.fileName, { type: image.mimeType });
+		const data = new FormData();
+			data.append('image', file); 
+		const response = await fetch('http://127.0.0.1:8000/ask-question/', {
+			method: 'POST',
+			body:data,
+			headers: {
+				'Accept': 'application/json',
+			}
+		})
+		if (!response.ok) {
+			throw new Error(`Non-200 response: ${response.statusText}`);
+		}
+		const dataa = await response.json();
+		// Process the response data
+		return dataa;
+	} catch (error) {
+		console.error("Error submitting image:", error);
+	}
+};
