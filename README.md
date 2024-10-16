@@ -46,7 +46,7 @@ Our app uses AI to provide personalized, real-time nutritional insights and reco
 Our Solution
 
 CalorieTracker is designed to address these issues by combining AI-based image recognition with a comprehensive nutritional database. Users can either upload a photo of their meal or manually enter food items to receive a detailed breakdown of their caloric intake, macronutrient composition (carbs, proteins, fats), and other essential nutritional values (such as vitamins, minerals, fiber, and sugars). Additionally, the application offers personalized recommendations based on the user’s specific health goals, medical conditions, and preferences.
-More detail is available in our [description document](./docs/DESCRIPTION.md).
+More detail is available in our [description document](./DESCRIPTION.md).
 
 ## Technology implementation
 
