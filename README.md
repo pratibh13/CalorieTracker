@@ -98,11 +98,9 @@ More detail is available in our [description document](./DESCRIPTION.md).
 
 ## Presentation materials
 
-_INSTRUCTIONS: The following deliverables should be officially posted to your My Team > Submissions section of the [Call for Code Global Challenge resources site](https://cfc-prod.skillsnetwork.site/), but you can also include them here for completeness. Replace the examples seen here with your own deliverable links._
-
 ### Solution demo video
 
-[![Watch the video](https://raw.githubusercontent.com/Liquid-Prep/Liquid-Prep/main/images/readme/IBM-interview-video-image.png)](https://youtu.be/vOgCOoy_Bx0)
+[![Watch the video](https://raw.githubusercontent.com/Liquid-Prep/Liquid-Prep/main/images/readme/IBM-interview-video-image.png)](https://www.youtube.com/watch?v=DTZ7Is4iwEU)
 
 ### Project development roadmap
 
