@@ -36,7 +36,7 @@ import { searchFood, get_nutrition_from_ai, submitImage } from "../services";
 import { FOODSUGGESTIONS } from "../constants/foodSuggestions";
 import { DailyConsumptionController } from "../firebase/firestore/DailyConsumptionController";
 import { PersonalFoodLabelController } from "../firebase/firestore/PersonalFoodLabelController";
-
+import { UserController } from "../firebase/firestore/UserController";
 const showEvent = Platform.select({
 	android: "keyboardDidShow",
 	default: "keyboardWillShow",
@@ -339,6 +339,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 
 	const visualSearch = async () => {
 		let foodItems = [];
+		const medicalCondition = (await UserController.fetchData()).medicalCondition;
+		console.log(medicalCondition);
 		try {
 			// Ensure the camera opens before proceeding
 			const image = await openCamera(); 
@@ -369,7 +371,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			try {
 				// Use Promise.all to wait for all async operations to finish
 				await Promise.all(list_of_foods.map(async (food,index) => {
-					await get_nutri_data(food,index);
+					await get_nutri_data(food,index,medicalCondition);
 				}));
 				// Set results after all data has been fetched
 				console.log("foodItems",foodItems);
@@ -388,7 +390,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		}
 	
 		// Fetch nutrition Data from DB or AI
-		async function get_nutri_data(value,index) {
+		async function get_nutri_data(value,index,medicalCondition) {
 			// const { data, error } = await searchFood(value);
 			// if (error) {
 			// 	throw error;
@@ -396,7 +398,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			// if (true) {
 				// If the food item is not found in the database, fetch it from the AI
 
-				const jsonResponse = await get_nutrition_from_ai(value);
+				const jsonResponse = await get_nutrition_from_ai(value,medicalCondition);
 				if (jsonResponse !== null)
 				{
 					const foodItems2 = [

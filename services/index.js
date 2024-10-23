@@ -93,8 +93,11 @@ const autoCompleteQuery = async query => {
 };
 
 
-export const get_nutrition_from_ai = async (value) => {
-	const query = JSON.stringify({ food: value });
+export const get_nutrition_from_ai = async (value,medicalCondition) => {
+	const query = JSON.stringify({ 
+		food: value,
+		medicalConditions: medicalCondition,
+	 });
 	try {
 		const response = await fetch(`http://127.0.0.1:8000/get-nutrition-data/?message=${query}`, {
 			method: 'POST',
