@@ -12,10 +12,10 @@ const ResultsFoodLabel = ({ data, isRecommended, isRecommendedDescription, onPre
 					<Text
 						style={styles.foodLabelCalText}
 					>{`${data.calories} kcal, ${data.servingQuantity} ${data.servingUnit}`}</Text>
-					<Text style={isRecommended ? { color: 'green' } : { color: "red" }}>
-						{isRecommended ? "Recommended" : "Not Recommended"}
+					<Text style={data.is_recomended ? { color: 'green' } : { color: "red" }}>
+						{data.is_recomended ? "Recommended" : "Not Recommended"}
 					</Text>
-					<Text style={styles.isRecommendedDescription}>Why: {isRecommendedDescription}</Text>
+					<Text style={data.is_recomended}>Why: {data.food_recomendation}</Text>
 				</Layout>
 				<Layout style={styles.foodLabelRight}>
 					<AddButton color={COLORS.primary} onPress={onPressAdd} />
