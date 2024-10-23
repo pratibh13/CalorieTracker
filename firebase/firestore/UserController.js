@@ -12,6 +12,7 @@ const fetchData = async () => {
 		weight: 1,
 		gender: "",
 		activityLevel: "",
+		medicalCondition: ""
 	};
 	if (docSnap.exists()) {
 		const user = docSnap.data();
@@ -23,6 +24,7 @@ const fetchData = async () => {
 			weight: user.weight,
 			gender: user.gender,
 			activityLevel: user.activityLevel,
+			medicalCondition: user.medicalCondition,
 		};
 		return temp;
 	}

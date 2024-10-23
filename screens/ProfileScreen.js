@@ -37,6 +37,8 @@ const ProfileScreen = () => {
 	const [age, setAge] = useState("");
 	const [bmi, setBmi] = useState("");
 	const [isMale, setIsMale] = useState(true);
+	const [medicalCondition, setmedicalCondition] = useState("None");
+
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +46,7 @@ const ProfileScreen = () => {
 
 	// all editing stuff
 	const [editingHeight, setEditingHeight] = useState("");
+	const [editingMedicalCondition, setEditingMedicalCondition] = useState("");
 	const [editingWeight, setEditingWeight] = useState("");
 	const [editingAge, setEditingAge] = useState("");
 	const [editingActivityLevel, setEditingActivityLevel] = useState(
@@ -72,6 +75,7 @@ const ProfileScreen = () => {
 			setEmail(temp.email);
 			setHeight(+temp.height);
 			setWeight(+temp.weight);
+			setmedicalCondition(temp.medicalCondition);
 			if (temp.gender === "male") {
 				setIsMale(true);
 			} else {
@@ -103,6 +107,7 @@ const ProfileScreen = () => {
 		setEditingHeight(height);
 		setEditingWeight(weight);
 		setEditingAge(age);
+		setEditingMedicalCondition(medicalCondition);
 		setEditingActivityLevel(activityLevelIndex);
 		setIsEditing(true);
 	};
@@ -117,6 +122,7 @@ const ProfileScreen = () => {
 			editingHeight === height &&
 			editingWeight === weight &&
 			editingAge === age &&
+			editingMedicalCondition === medicalCondition &&
 			displayValue === displayValueEditing
 		) {
 			setIsEditingLoading(false);
@@ -169,6 +175,7 @@ const ProfileScreen = () => {
 		const newData = {
 			age: +editingAge,
 			height: +editingHeight,
+			medicalCondition: editingMedicalCondition,
 			weight: +editingWeight,
 			activityLevel: displayValueEditing,
 		};
@@ -180,6 +187,7 @@ const ProfileScreen = () => {
 		}
 		setHeight(editingHeight);
 		setWeight(editingWeight);
+		setEditingMedicalCondition(editingMedicalCondition);
 		setAge(editingAge);
 		setActivityLevelIndex(editingActivityLevel);
 		const tempBmi = calculateBmi(editingWeight, editingHeight);
@@ -252,7 +260,7 @@ const ProfileScreen = () => {
 						<Layout style={styles.headerContent}>
 							<Text style={styles.name}>{name}</Text>
 							<Text style={styles.userInfo}>{email}</Text>
-							<Text style={styles.userInfo}>Singapore</Text>
+							<Text style={styles.userInfo}>India</Text>
 						</Layout>
 
 						<Layout style={styles.profileContent}>
@@ -375,6 +383,34 @@ const ProfileScreen = () => {
 										</Select>
 									)}
 								</Layout>
+							</Layout>
+							<Layout style={styles.row}>
+								<Layout style={styles.longComponent}>
+									<Text style={styles.title}>Health Conditions</Text>
+									{isEditing ? (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "#F7F9FC",
+											}}
+											value={editingMedicalCondition.toString()}
+											textStyle={{ color: "black" }}
+											// keyboardType="numeric"
+											onChangeText={nextValue => setEditingMedicalCondition(nextValue)}
+										/>
+									) : (
+										<Input
+											style={{
+												...styles.input,
+												backgroundColor: "white",
+											}}
+											disabled={true}
+											value={medicalCondition.toString()}
+											textStyle={{ color: "black" }}
+										/>
+									)}
+								</Layout>
+								
 							</Layout>
 							{errorText && (
 								<Layout style={styles.errorContainer}>

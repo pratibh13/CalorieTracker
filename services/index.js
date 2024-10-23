@@ -120,7 +120,7 @@ export const submitImage = async (image) => {
 		const file = new File([await fetch(image.uri).then(response => response.blob())], image.fileName, { type: image.mimeType });
 		const data = new FormData();
 			data.append('image', file); 
-		const response = await fetch('http://127.0.0.1:8000/ask-question/', {
+		const response = await fetch('http://127.0.0.1:8000/scan-image/', {
 			method: 'POST',
 			body:data,
 			headers: {
