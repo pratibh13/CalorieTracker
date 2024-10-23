@@ -1,4 +1,5 @@
 //  put nutritionix api here
+const url='http://127.0.0.1:8000'
 export const searchFood = async query => {
 	try {
 		const data = await searchFoodQuery(query);
@@ -15,7 +16,7 @@ export const searchFood = async query => {
 				id: index,
 				name: result?.food_name,
 				calories: result?.nf_calories,
-				protien:result?.nf_protein,
+				protein:result?.nf_protein,
 				carbs:result?.nf_total_carbohydrate,
 				fat:result?.nf_total_fat,
 				servingQuantity: result?.serving_qty,
@@ -99,7 +100,7 @@ export const get_nutrition_from_ai = async (value,medicalCondition) => {
 		medicalConditions: medicalCondition,
 	 });
 	try {
-		const response = await fetch(`http://127.0.0.1:8000/get-nutrition-data/?message=${query}`, {
+		const response = await fetch(`${url}/get-nutrition-data/?message=${query}`, {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -123,7 +124,7 @@ export const submitImage = async (image) => {
 		const file = new File([await fetch(image.uri).then(response => response.blob())], image.fileName, { type: image.mimeType });
 		const data = new FormData();
 			data.append('image', file); 
-		const response = await fetch('http://127.0.0.1:8000/scan-image/', {
+		const response = await fetch(`${url}/scan-image/`, {
 			method: 'POST',
 			body:data,
 			headers: {
@@ -151,7 +152,7 @@ const get_recomendation = async  (value) => {
 	// ```
 	const query = JSON.stringify({ food: value });
 	try {
-		const response = await fetch(`http://127.0.0.1:8000/get-recomendation/?message=${query}`, {
+		const response = await fetch(`${url}/get-recomendation/?message=${query}`, {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',

@@ -127,7 +127,7 @@ const HomeScreen = ({ navigation }) => {
 				);
 				setBaseGoal(calculateCaloriesNeeded(isMale, weight, height, age));
 				setFood(foodConsumed.calorie);
-				setProtein(foodConsumed.protien)
+				setProtein(foodConsumed.protein)
 				setCarbs(foodConsumed.carbs)
 				setFats(foodConsumed.fat)
 				setExercise(activityLevel);
@@ -242,7 +242,7 @@ const HomeScreen = ({ navigation }) => {
 										fontSize: SIZES.font,
 									}}
 								>
-									Calories = Protien + Carbs + Fats 
+									Calories = Protein + Carbs + Fats 
 								</Text>
 							</Layout>
 							<Layout
@@ -312,7 +312,7 @@ const HomeScreen = ({ navigation }) => {
 								>
 									<HomePageIcon
 										source={assets.flagIcon}
-										title="Protien"
+										title="Protein"
 										data={protein}
 										total={Math.round((baseGoal * 0.35) / 4)}
 									/>
