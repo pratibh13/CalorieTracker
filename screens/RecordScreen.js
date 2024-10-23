@@ -71,7 +71,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const [modalDataindex, setModalDataIndex] = useState({
 		foodName: "",
 		calories: 0,
-		protien:0,
+		protein:0,
 		carbs:0,
 		fat:0,
 		quantity: 0,
@@ -82,7 +82,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	const [modalData, setModalData] = useState({
 		foodName: "",
 		calories: 0,
-		protien:0,
+		protein:0,
 		carbs:0,
 		fat:0,
 		quantity: 0,
@@ -204,7 +204,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		const newConsumption = {
 			foodName: modalData.foodName,
 			totalCalories: modalData.calories,
-			protien:modalData.protien,
+			protein:modalData.protein,
 			carbs:modalData.carbs,
 			fat:modalData.fat,
 			servingQuantity: modalData.quantity,
@@ -235,16 +235,16 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		useState(false);
 
 	const handleAdd = data => {
-		console.log(" Data while handleAdd",data)
-		console.log("calorie Data while handleAdd",data.name)
+		// console.log(" Data while handleAdd",data)
+		// console.log("calorie Data while handleAdd",data.name)
 		if (data) {
-			console.log("inside data")
-			console.log("Modal Data while handleAdd inside",modalData)
+			// console.log("inside data")
+			// console.log("Modal Data while handleAdd inside",modalData)
 			setModalData({
 				foodName: data.name,
 				calories: data.calories,
-				protien:isNaN(data.protien)?0:data.protien,
-			    carbs:data.carbs==undefined?0:data.carbs,
+				protein:isNaN(data.protein)?0:data.protein,
+			    carbs:data.carbs==undefined?1000:data.carbs,
 			    fat:data.fat==undefined?0:data.fat, 
 				quantity: data.servingQuantity,
 				unit: data.servingUnit,
@@ -252,13 +252,14 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			setModalDataIndex({
 				foodName: data.name,
 				calories: data.calories,
-				protien:isNaN(data.protien)?0:data.protien,
-			    carbs:data.carbs==undefined?0:data.carbs,
+				protein:isNaN(data.protein)?0:data.protein,
+			    carbs:data.carbs==undefined?1000:data.carbs,
 			    fat:data.fat==undefined?0:data.fat, 
 				quantity: data.servingQuantity,
 				unit: data.servingUnit,
 			});
-			
+			// setIsRecommended(item.is_recomended)
+			// setIsRecommendedDescription(item.food_recomendation);
 			console.log("Modal Data while handleAdd",modalData)
 			setAddConsumptionPanelVisible(true);
 		}
@@ -270,18 +271,18 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 
 
 	const recalculateNutritionalValues = (updatedModalData) => {
-		const { calories, protien, carbs, fat, unit, quantity } = updatedModalData;
+		const { calories, protein, carbs, fat, unit, quantity } = updatedModalData;
 		
-		 // Debugging: Log inputs
-		 console.log("Input values: ", {
-			calories,
-			protien,
-			carbs,
-			fat,
-			unit,
-			quantity,
-			unitMultiplier: calorieMap[unit],
-		  });
+		 // Debugging:r Log inputs
+		//  console.log("Input values: ", {
+		// 	calories,
+		// 	protein,
+		// 	carbs,
+		// 	fat,
+		// 	unit,
+		// 	quantity,
+		// 	unitMultiplier: calorieMap[unit],
+		//   });
 		
 		  // Ensure `calorieMap[unit]` exists
 		  if (!calorieMap[unit]) {
@@ -293,7 +294,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		  const numericQuantity = parseInt(quantity, 10);
 		return {
 			calories: parseFloat((modalDataindex.calories/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
-			protien: parseFloat((modalDataindex.protien/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
+			protein: parseFloat((modalDataindex.protein/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
 			carbs: parseFloat((modalDataindex.carbs/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
 			fat: parseFloat((modalDataindex.fat/100 * calorieMap[unit] * numericQuantity).toFixed(2)),
 		};
@@ -306,11 +307,11 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 			...prevModalData,
 			[field]: newValue, // Update the specific field (e.g., 'unit', 'quantity')
 		  };
-	  console.log("Updated Model data",updatedModalData);
-	  console.log("Updated ModelIndex data",modalDataindex);
+	//   console.log("Updated Model data",updatedModalData);
+	//   console.log("Updated ModelIndex data",modalDataindex);
 		  const recalculatedValues = recalculateNutritionalValues(updatedModalData);
-		  console.log("recalculatedValues Model data",recalculatedValues);
-		  console.log("recalculatedValues ModelIndex data",modalDataindex);
+		//   console.log("recalculatedValues Model data",recalculatedValues);
+		//   console.log("recalculatedValues ModelIndex data",modalDataindex);
 		  return {
 			...updatedModalData,
 			...recalculatedValues, // Update recalculated values
@@ -355,6 +356,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 					console.log("No response received from submitImage()");
 				}
 			}
+			console.log("Response",response.foods);
 			if (!response || !response.foods) {
 				throw new Error("No foods found in the response.");
 			}
@@ -366,8 +368,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 	
 			try {
 				// Use Promise.all to wait for all async operations to finish
-				await Promise.all(list_of_foods.map(async (food) => {
-					await get_nutri_data(food);
+				await Promise.all(list_of_foods.map(async (food,index) => {
+					await get_nutri_data(food,index);
 				}));
 				// Set results after all data has been fetched
 				console.log("foodItems",foodItems);
@@ -386,29 +388,38 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 		}
 	
 		// Fetch nutrition Data from DB or AI
-		async function get_nutri_data(value) {
-			const { data, error } = await searchFood(value);
-			if (error) {
-				throw error;
-			}
-			if (data.length === 0) {
+		async function get_nutri_data(value,index) {
+			// const { data, error } = await searchFood(value);
+			// if (error) {
+			// 	throw error;
+			// }
+			// if (true) {
 				// If the food item is not found in the database, fetch it from the AI
+
 				const jsonResponse = await get_nutrition_from_ai(value);
-				const foodItems2 = [
-					{
-						id: parseInt(jsonResponse.id),
-						name: jsonResponse.name,
-						calories: parseInt(jsonResponse.calories),
-						protein: parseInt(jsonResponse.protein),
-						carbs: parseInt(jsonResponse.carbs),
-						fat: parseFloat(jsonResponse.fat),
-						servingQuantity: parseInt(jsonResponse.servingQuantity),
-						servingUnit: jsonResponse.servingUnit
-					}];
-				foodItems.push(foodItems2[0]); // Push AI data to foodItems array
-			}else{
-				foodItems.push(data[0]); // Push DB data to foodItems array
-			}
+				if (jsonResponse !== null)
+				{
+					const foodItems2 = [
+						{
+							id: index,
+							name: jsonResponse.name,
+							calories: parseInt(jsonResponse.calories),
+							protein: parseInt(jsonResponse.protein),
+							carbs: parseInt(jsonResponse.carbs),
+							fat: parseFloat(jsonResponse.fat),
+							servingQuantity: "1",
+							servingUnit: "cup",
+							is_recomended: jsonResponse.is_recommended,
+							food_recomendation: jsonResponse.food_recommendation,
+						}];
+					console.log("check: ", foodItems2[0]);
+					foodItems.push(foodItems2[0]);
+				}
+				
+				 // Push AI data to foodItems array
+			// }else{
+			// 	foodItems.push(data[0]); // Push DB data to foodItems array
+			// }
 		}
 	};
 
@@ -521,8 +532,8 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 											renderItem={({ item }) => (
 												<ResultsFoodLabel
 													data={item}
-													isRecommended={isRecommended}
-													isRecommendedDescription={isRecommendedDescription}
+													isRecommended={item.is_recomended}
+													isRecommendedDescription={item.food_recomendation}
 													onPressAdd={() => handleAdd(item)}
 												/>
 											)}
@@ -599,7 +610,7 @@ const AllTabScreen = ({ navigation, setPersonalFoodLabelData }) => {
 													{"Protein: "}
 													<Text
 														style={styles.rightText}
-													>{`${modalData.protien} gm`}</Text>
+													>{`${modalData.protein} gm`}</Text>
 												</Text>
 												<Text style={styles.leftText}>
 													{"Carbs: "}
